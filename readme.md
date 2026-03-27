@@ -11,6 +11,14 @@
 * **Mesures Multiples :** Gestion de plusieurs couches de mesures (Echelle + 3 mesures de contrôle) avec codes couleurs distincts.
 * **Manipulation Fluide :** Déplacement de l'image (Pan) par clic droit et ajustement des points par "Drag & Drop".
 
+## Details techniques
+L'application utilise une conversion de coordonnées entre l'espace Canevas (affichage) et l'espace Image (pixels réels) pour garantir que les mesures restent exactes, quel que soit le niveau de zoom choisi.
+
+Calcul de la distance :
+```Distance Réelle = sqrt((x2 - x1)² + (y2 - y1)²) * Facteur de Conversion```
+
+Le système repose sur la persistance des coordonnées dans le référentiel de l'image source, tandis que l'affichage est recalculé dynamiquement lors de chaque rafraîchissement du Canvas pour correspondre au facteur de zoom et au décalage de l'origine.
+
 ---
 
 ## Installation
@@ -33,11 +41,3 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-
-## Details techniques
-L'application utilise une conversion de coordonnées entre l'espace Canevas (affichage) et l'espace Image (pixels réels) pour garantir que les mesures restent exactes, quel que soit le niveau de zoom choisi.
-
-Calcul de la distance :
-```Distance Réelle = sqrt((x2 - x1)² + (y2 - y1)²) * Facteur de Conversion```
-
-Le système repose sur la persistance des coordonnées dans le référentiel de l'image source, tandis que l'affichage est recalculé dynamiquement lors de chaque rafraîchissement du Canvas pour correspondre au facteur de zoom et au décalage de l'origine.
