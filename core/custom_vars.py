@@ -1,10 +1,12 @@
 import tkinter as tk
 import json
 
+
 class JSONVar(tk.StringVar):
     """A Tk variable that can hold dicts and lists"""
+
     def __init__(self, *args, **kwargs):
-        kwargs['value'] = json.dumps(kwargs.get('value'))
+        kwargs["value"] = json.dumps(kwargs.get("value"))
         super().__init__(*args, **kwargs)
 
     def set(self, value, *args, **kwargs):

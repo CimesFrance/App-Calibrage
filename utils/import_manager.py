@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import zipfile
 import pandas as pd
 
+
 def importer_image_tk(nom_image):
     """
     Charge une image depuis le dossier assets, peu importe d'où est appelé le script.
@@ -11,7 +12,7 @@ def importer_image_tk(nom_image):
     dossier_utils = os.path.dirname(os.path.abspath(__file__))
     racine_projet = os.path.dirname(dossier_utils)
     chemin_fichier = os.path.join(racine_projet, "assets", nom_image)
-    
+
     if not os.path.exists(chemin_fichier):
         print(f"Erreur : Le fichier {chemin_fichier} est introuvable.")
         # Optionnel : retourner une image vide ou par défaut ici
@@ -20,7 +21,6 @@ def importer_image_tk(nom_image):
     img = Image.open(chemin_fichier)
     img = img.resize((24, 24), Image.LANCZOS)
     return ImageTk.PhotoImage(img)
-
 
 
 def info_extract_courbe_numerique(zip_file):
@@ -37,13 +37,16 @@ def info_extract_courbe_numerique(zip_file):
         if ligne.strip():
             # séparer par le '='
             nom, val = ligne.split("=")
-            nom = nom.strip()        # enlever espaces autour du nom
-            val = val.strip()        # enlever espaces autour de la valeur
+            nom = nom.strip()  # enlever espaces autour du nom
+            val = val.strip()  # enlever espaces autour de la valeur
             # convertir en float si possible
             try:
                 val = float(val)
             except ValueError:
                 pass  # garder en string si ce n'est pas un nombre
             variables[nom] = val
-    granulometrie = {"tamis" : df["Tamis(mm)"].tolist() , "cumul" : df["Cumul(%)"].tolist()}
-    return granulometrie , variables
+    granulometrie = {
+        "tamis": df["Tamis(mm)"].tolist(),
+        "cumul": df["Cumul(%)"].tolist(),
+    }
+    return granulometrie, variables
