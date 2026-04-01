@@ -1,4 +1,4 @@
-# CIMES Calibration Suite | Pro Edition
+# CIMES Calibration Suite 
 
 Une application Python spécialisée dans l'inspection visuelle et la prise de mesures géométriques précises à partir d'images numériques.
 
