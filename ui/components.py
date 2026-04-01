@@ -9,30 +9,16 @@ from utils.import_manager import importer_image_tk
 
 
 class Card(tk.Frame):
-    """Conteneur minimaliste blanc avec ombre légère"""
+    """Conteneur transparent pour la sidebar"""
 
     def __init__(self, parent, title="", **kwargs):
-        super().__init__(
-            parent,
-            bg="#FFFFFF",
-            padx=20,
-            pady=20,
-            highlightbackground="#DCDFE3",
-            highlightthickness=1,
-            **kwargs
-        )
+        super().__init__(parent, bg="#2C3E50", pady=10, **kwargs)
         if title:
-            lbl = tk.Label(
-                self,
-                text=title.upper(),
-                font=("Segoe UI", 8, "bold"),
-                bg="#FFFFFF",
-                fg="#6C757D",
-            )
-            lbl.pack(anchor="w", pady=(0, 15))
+            lbl = ttk.Label(self, text=title, style="Sidebar.Title.TLabel")
+            lbl.pack(anchor="w", pady=(0, 10))
 
 
-class image_frame(Card):
+class ImportImg(Card):
     """Carte d'importation d'image avec un bouton pour charger une image depuis le disque"""
 
     def __init__(self, parent, app, **kwargs):
@@ -42,20 +28,16 @@ class image_frame(Card):
         self._build()
 
     def _build(self):
-        f = tk.Frame(self, bg="#FFFFFF")
+        f = ttk.Frame(self, style="Sidebar.TFrame")
         f.pack(fill="x")
-        tk.Label(
-            f,
-            text="Sélectionnez un fichier .jpg",
-            font=("Segoe UI", 9),
-            bg="#FFFFFF",
-            fg="#495057",
-        ).pack(side="left")
+        ttk.Label(f, text="Sélectionnez une image", style="Sidebar.TLabel").pack(
+            side="left"
+        )
         ttk.Button(
             f,
             image=self.tk_charger_logo,
             command=self._import_tk_img,
-            style="Secondary.TButton",
+            style="Icon.TButton",
         ).pack(side="right")
 
     def _import_tk_img(self):
@@ -64,31 +46,29 @@ class image_frame(Card):
             self.app.img.reboot()
             self.app.zoom_factor.set(1.0)
             self.app.img.img_path.set(path)
-            self.app.flag_echelle_frame.set(True)
+            self.app.flag_EchelleFrame.set(True)
             self.app.flag_save_btn_affiche.set(True)
 
 
-class Echelle_frame(Card):
+class EchelleFrame(Card):
+    """Carte d'étalonnage avec un bouton pour appliquer l'échelle"""
     def __init__(self, parent, app, **kwargs):
         super().__init__(parent, title="Étalonnage", **kwargs)
         self.app = app
         self.app.mesure_echelle.created = True
         self._build()
-        self.app.flag_echelle_frame.trace_add("write", self.update_view)
+        self.app.flag_EchelleFrame.trace_add("write", self.update_view)
 
     def _build(self):
         # Frame pour la mesure d'échelle
-        self.app.mesure_echelle.mesure_frame = tk.Frame(self, bg="#FFFFFF")
+        self.app.mesure_echelle.mesure_frame = tk.Frame(self, bg="#2C3E50")
         self.app.mesure_echelle.mesure_frame.pack(fill="x")
-        self.app.mesure_echelle.mesure_GUI()
+        self.app.mesure_echelle.mesure_gui()
         # Zone de saisie
-        self.input_f = tk.Frame(self, bg="#FFFFFF", pady=10)
+        self.input_f = tk.Frame(self, bg="#2C3E50", pady=10)
         self.input_f.pack(fill="x")
-        self.lbl = tk.Label(
-            self.input_f,
-            text="Longueur réelle (mm)",
-            font=("Segoe UI", 9),
-            bg="#FFFFFF",
+        self.lbl = ttk.Label(
+            self.input_f, text="Longueur réelle (mm)", style="Sidebar.TLabel"
         )
         self.lbl.pack(side="left")
         self.ent = ttk.Entry(
@@ -96,30 +76,27 @@ class Echelle_frame(Card):
         )
         self.ent.pack(side="right")
         self.btn = ttk.Button(
-            self,
-            text="Appliquer l'Échelle",
-            command=self.apply_scale,
-            style="Primary.TButton",
+            self, text="Appliquer l'Échelle", command=self.apply_scale, style="TButton"
         )
         self.btn.pack(fill="x", pady=(10, 0))
 
     def update_view(self, *args):
-        state = "normal" if self.app.flag_echelle_frame.get() else "disabled"
+        """Met à jour l'affichage de la carte d'étalonnage"""
+        state = "normal" if self.app.flag_EchelleFrame.get() else "disabled"
         self.btn.config(state=state)
         self.ent.config(state=state)
 
     def apply_scale(self):
+        """Applique l'échelle"""
         try:
             val_reelle = float(self.app.distance_saisie.get())
             m_ech = self.app.mesure_echelle
             if m_ech.pts["pt1"].created and m_ech.pts["pt2"].created:
                 p1, p2 = m_ech.pts["pt1"].coord_pt_img, m_ech.pts["pt2"].coord_pt_img
                 dist_px = np.sqrt((p1["x"] - p2["x"]) ** 2 + (p1["y"] - p2["y"]) ** 2)
-
                 if dist_px > 0:
                     nouveau_facteur = val_reelle / dist_px
                     self.app.facteur_conversion.set(nouveau_facteur)
-
                     # Mise à jour immédiate de tous les affichages de mesures
                     for m in self.app.list_mesures:
                         if m.created:
@@ -129,20 +106,22 @@ class Echelle_frame(Card):
 
 
 class Interraction(tk.Frame):
-    """Conteneur principal de la barre latérale, avec scrollbar intégrée pour les cartes d'interaction"""
+    """Conteneur principal de la barre latérale, 
+    avec scrollbar intégrée pour les cartes d'interaction"""
 
     def __init__(self, parent, app, **kwargs):
         # On extrait la largeur pour la fixer
-        width = kwargs.get("width", 320)
-        super().__init__(parent, bg=kwargs.get("bg"), width=width)
+        width = kwargs.get("width", 350)
+        self.bg_color = kwargs.get("bg", "#2C3E50")
+        super().__init__(parent, bg=self.bg_color, width=width)
         self.app = app
         self.canvas = tk.Canvas(
-            self, bg=kwargs.get("bg"), highlightthickness=0, width=width
+            self, bg=self.bg_color, highlightthickness=0, width=width
         )
         self.scrollbar = ttk.Scrollbar(
             self, orient="vertical", command=self.canvas.yview
         )
-        self.scrollable_frame = tk.Frame(self.canvas, bg=kwargs.get("bg"))
+        self.scrollable_frame = tk.Frame(self.canvas, bg=self.bg_color)
         self.scrollable_frame.bind(
             "<Configure>",
             lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
@@ -158,28 +137,33 @@ class Interraction(tk.Frame):
         self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
         # Initialisation des cadres de mesures
         self._setup_measurements()
-        self.interraction_GUI()
+        self.interraction_gui()
 
     def _setup_measurements(self):
-        self.app.mesures_supp.mesures_supp_frame = tk.Frame(
-            self.scrollable_frame, bg="#F0F2F5"
+        self.app.MesureSupp.mesures_supp_frame = tk.Frame(
+            self.scrollable_frame, bg=self.bg_color
         )
-        for m in self.app.mesures_supp.mes_mesures_supp.values():
-            m.mesure_frame = tk.Frame(self.app.mesures_supp.mesures_supp_frame)
+        for m in self.app.MesureSupp.mes_mesures_supp.values():
+            m.mesure_frame = tk.Frame(
+                self.app.MesureSupp.mesures_supp_frame, bg=self.bg_color
+            )
 
-    def interraction_GUI(self):
-        image_frame(self.scrollable_frame, self.app).pack(
-            fill="x", padx=10, pady=(0, 15)
+    def interraction_gui(self):
+        """Initialise l'interface graphique de la barre latérale"""
+        ImportImg(self.scrollable_frame, self.app).pack(
+            fill="x", padx=15, pady=(10, 5)
         )
-        Echelle_frame(self.scrollable_frame, self.app).pack(
-            fill="x", padx=10, pady=(0, 15)
+        tk.Frame(self.scrollable_frame, height=1, bg="#34495E").pack(
+            fill="x", padx=15, pady=15
+        )
+        EchelleFrame(self.scrollable_frame, self.app).pack(fill="x", padx=15, pady=5)
+        tk.Frame(self.scrollable_frame, height=1, bg="#34495E").pack(
+            fill="x", padx=15, pady=15
         )
         self.m_card = Card(self.scrollable_frame, title="Mesures de contrôle")
-        self.m_card.pack(fill="x", padx=10, pady=(0, 15))
-        # Re-parentage de la frame de mesures
-        self.app.mesures_supp.mesures_supp_frame.master = self.m_card
-        self.app.mesures_supp.mesures_supp_frame.pack(fill="x")
-        self.app.mesures_supp.mesures_supp_GUI()
+        self.m_card.pack(fill="x", padx=15, pady=5)
+        self.app.MesureSupp.mesures_supp_frame.pack(fill="x", padx=15, pady=(0, 10))
+        self.app.MesureSupp.mesures_supp_gui()
 
     def _on_mousewheel(self, event):
         """Permet de scroller avec la molette"""

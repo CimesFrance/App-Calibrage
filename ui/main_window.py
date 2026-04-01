@@ -1,54 +1,36 @@
-"""Fenêtre principale de l'application de calibration"""
+"""Module de gestion de la fenetre principale"""
 
 import tkinter as tk
-from tkinter import ttk
 from core.state import AppState
 from ui.canvas_view import FenetreImage
 from ui.components import Interraction
+from ui.styles import StyleManager
 
 
 class ApplicationCalibrage(tk.Tk):
+    """Fenêtre principale de l'application de calibration"""
     def __init__(self):
         super().__init__()
         self.app = AppState()
-        self.title("App Calibrage Image")
-        self.geometry("1200x800")
+        self.title("CIMES Calibration Suite")
         self.iconbitmap("assets/image.ico")
-        self.configure(bg="#F0F2F5")  # Fond de l'application
-        # Configuration des styles TTK
-        style = ttk.Style()
-        style.theme_use("clam")
-        # Bouton Principal
-        style.configure(
-            "Primary.TButton",
-            padding=10,
-            font=("Segoe UI", 9, "bold"),
-            background="#0056B3",
-            foreground="white",
-        )
-        style.map("Primary.TButton", background=[("active", "#004494")])
-        # Bouton Secondaire
-        style.configure("Secondary.TButton", padding=8, font=("Segoe UI", 9))
-        # Entry
-        style.configure("TEntry", fieldbackground="#FFFFFF", borderwidth=1)
-        # Layout principal
-        self.canvas_view = FenetreImage(
-            self, self.app, bg="#FFFFFF", bd=0, highlightthickness=0
-        )
-        self.sidebar = Interraction(self, self.app, width=320, bg="#F0F2F5")
-        self.canvas_view.grid(row=0, column=0, sticky="nsew", padx=15, pady=15)
-        self.sidebar.grid(row=0, column=1, sticky="nsew", padx=(0, 15), pady=15)
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-        self.title("Calibration Suite | Pro Edition")
         self.geometry("1200x800")
+        self.minsize(1000, 600)
         self.resizable(True, True)
-        self.minsize(1000, 600)  # Taille minimale pour ne pas écraser l'UI
-        self.canvas_view = FenetreImage(
-            self, self.app, bg="#FFFFFF", bd=0, highlightthickness=0
+        # Application du StyleManager
+        self.style_manager = StyleManager(self)
+        # Layout principal
+        self.sidebar = Interraction(
+            self, self.app, width=350, bg=self.style_manager.BG_SIDEBAR
         )
-        self.sidebar = Interraction(self, self.app, width=320, bg="#F0F2F5")
-        self.canvas_view.grid(row=0, column=0, sticky="nsew", padx=15, pady=15)
-        self.sidebar.grid(row=0, column=1, sticky="nsew", padx=(0, 15), pady=15)
+        self.canvas_view = FenetreImage(
+            self, self.app, bg=self.style_manager.BG_MAIN, bd=0, highlightthickness=0
+        )
+        # Sidebar à gauche (colonne 0)
+        self.sidebar.grid(row=0, column=0, sticky="ns", padx=0, pady=0)
+        self.sidebar.pack_propagate(False)
+        self.sidebar.grid_propagate(False)
+        # Canvas à droite (colonne 1)
+        self.canvas_view.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
         self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)

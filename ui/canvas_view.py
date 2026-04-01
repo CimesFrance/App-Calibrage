@@ -8,6 +8,7 @@ from utils.point_manager import bool_pt_appuye
 
 
 class FenetreImage(tk.Canvas):
+    """Classe pour afficher l'image et les mesures. """
     def __init__(self, parent, app, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
         self.app = app
@@ -28,8 +29,8 @@ class FenetreImage(tk.Canvas):
         if not path:
             return
         try:
-            self.app.img.Image_img = Image.open(path)
-            img_orig = self.app.img.Image_img
+            self.app.img.ImportImg = Image.open(path)
+            img_orig = self.app.img.ImportImg
             zoom = self.app.zoom_factor.get()
             new_w, new_h = int(img_orig.width * zoom), int(img_orig.height * zoom)
             img_resized = img_orig.resize((new_w, new_h), Image.LANCZOS)
@@ -41,7 +42,7 @@ class FenetreImage(tk.Canvas):
             self.create_image(orig["x"], orig["y"], anchor="nw", image=self.image_ref)
             # Puis on dessine les mesures par-dessus
             for mesure in self.app.list_mesures:
-                if mesure.flag_affiche_ptLigne.get():
+                if mesure.flag_affiche_ptligne.get():
                     self._dessiner_mesure(mesure, zoom, orig)
         except Exception as e:
             print(f"Erreur de rendu : {e}")
@@ -50,7 +51,7 @@ class FenetreImage(tk.Canvas):
         pts_canvas = []
         for pt in mesure.pts.values():
             if pt.created:
-                # Calcul précis des coordonnées écran
+                # Calcul des coordonnées écran
                 cx = (pt.coord_pt_img["x"] * zoom) + orig["x"]
                 cy = (pt.coord_pt_img["y"] * zoom) + orig["y"]
                 pt.coord_pt_canvas = {"x": cx, "y": cy}
@@ -90,7 +91,7 @@ class FenetreImage(tk.Canvas):
         self._maj_fenetre()
 
     def _handl_pt_start(self, event):
-        if not self.app.img.Image_img:
+        if not self.app.img.ImportImg:
             return
         idx = self.app.choix_mesure.get()
         mesure_active = self.app.list_mesures[idx]

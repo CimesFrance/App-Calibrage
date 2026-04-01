@@ -1,6 +1,9 @@
+"""Module de gestion des imports de l'application.
+"""
+
 import os
-from PIL import Image, ImageTk
 import zipfile
+from PIL import Image, ImageTk
 import pandas as pd
 
 
@@ -24,6 +27,9 @@ def importer_image_tk(nom_image):
 
 
 def info_extract_courbe_numerique(zip_file):
+    """
+    Extrait les informations de la courbe numérique du fichier zip.
+    """
     with zipfile.ZipFile(zip_file, "r") as z:
         # --- Lire le CSV directement dans un DataFrame ---
         with z.open("data.csv") as f:

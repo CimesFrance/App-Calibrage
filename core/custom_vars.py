@@ -1,6 +1,8 @@
+"""Module de gestion des variables personnalisées de l'application.
+"""
+
 import tkinter as tk
 import json
-
 
 class JSONVar(tk.StringVar):
     """A Tk variable that can hold dicts and lists"""
