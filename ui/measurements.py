@@ -152,9 +152,9 @@ class UneMesure :
         if not (self.pts["pt1"].created and self.pts["pt2"].created):
             return 0.00
         p1, p2 = self.pts["pt1"].coord_pt_img, self.pts["pt2"].coord_pt_img
-        # Distance euclidienne pure sur l'image
+        # Distance euclidienne pure sur l'image source en pixels
         dist_px = np.sqrt((p1["x"] - p2["x"]) ** 2 + (p1["y"] - p2["y"]) ** 2)
-        # Application du facteur de conversion (mm/pixel)
+        # Application du facteur de conversion (mm/pixel) pour obtenir la distance réelle
         dist_reelle = dist_px * self.app.facteur_conversion.get()
         return round(dist_reelle, 2)
 

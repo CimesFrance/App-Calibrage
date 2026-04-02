@@ -18,7 +18,6 @@ def importer_image_tk(nom_image):
 
     if not os.path.exists(chemin_fichier):
         print(f"Erreur : Le fichier {chemin_fichier} est introuvable.")
-        # Optionnel : retourner une image vide ou par défaut ici
         return None
 
     img = Image.open(chemin_fichier)
@@ -31,12 +30,12 @@ def info_extract_courbe_numerique(zip_file):
     Extrait les informations de la courbe numérique du fichier zip.
     """
     with zipfile.ZipFile(zip_file, "r") as z:
-        # --- Lire le CSV directement dans un DataFrame ---
+        #Lire le CSV directement dans un DataFrame
         with z.open("data.csv") as f:
             df = pd.read_csv(f)
-        # --- Lire le TXT directement dans une variable ---
+        #Lire le TXT directement dans une variable
         with z.open("params_correction.txt") as f:
-            texte = f.read().decode("utf-8")  # convertir les bytes en strin
+            texte = f.read().decode("utf-8")  # convertir les bytes en string
     variables = {}
     for ligne in texte.splitlines():
         # ignorer les lignes vides
