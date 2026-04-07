@@ -62,6 +62,7 @@ class AppState:
         self.mesure_echelle = UneMesure (
             title="Mesure Echelle", color="red", num=0, app=self
         )
+        self._load_mesure_principale()
         self.MesureSupp = MesureSupp(app=self)
         self.list_mesures = [
             self.mesure_echelle,
@@ -69,3 +70,31 @@ class AppState:
             self.MesureSupp.mes_mesures_supp["Mesure_supp_2"],
             self.MesureSupp.mes_mesures_supp["Mesure_supp_3"],
         ]
+
+    def _load_mesure_principale(self):
+        import json
+        import os
+        if os.path.exists("mesure_config.json"):
+            try:
+                with open("mesure_config.json", "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                self.facteur_conversion.set(data.get("facteur_conversion", 1.0))
+                self.distance_saisie.set(data.get("distance_saisie", "0.00"))
+                longueur = data.get("longueur", "0.00")
+                self.mesure_echelle.longueur.set(longueur)
+                
+                created = data.get("created", False)
+                self.mesure_echelle.created = created
+                
+                pt1_data = data.get("pt1", {"x": 0, "y": 0})
+                self.mesure_echelle.pts["pt1"].coord_pt_img = pt1_data
+                self.mesure_echelle.pts["pt1"].created = created
+                
+                pt2_data = data.get("pt2", {"x": 0, "y": 0})
+                self.mesure_echelle.pts["pt2"].coord_pt_img = pt2_data
+                self.mesure_echelle.pts["pt2"].created = created
+                
+                if created:
+                    self.flag_EchelleFrame.set(True)
+            except Exception as e:
+                print("Erreur de chargement de la configuration:", e)

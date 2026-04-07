@@ -1,0 +1,14 @@
+{
+    "facteur_conversion": 1.0,
+    "distance_saisie": "0.00",
+    "longueur": "224.54",
+    "created": true,
+    "pt1": {
+        "x": 469.0,
+        "y": 399.0
+    },
+    "pt2": {
+        "x": 676.0,
+        "y": 312.0
+    }
+}

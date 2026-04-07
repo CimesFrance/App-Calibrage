@@ -78,13 +78,23 @@ class UneMesure :
                 style="Sidebar.TRadiobutton",
             )
             self.radio_saisir.pack(side="right")
+            
+            if self.num == 0:
+                self.btn_save = ttk.Button(
+                    btm,
+                    text="Sauvegarder mesure",
+                    command=self._sauvegarder_mesure,
+                    style="TButton"
+                )
+                self.btn_save.pack(side="right", padx=10)
+
             if self.num != 0:
                 is_active = self.flag_affiche_frame.get()
                 etat = "normal" if is_active else "disabled"
-                # self.radio_saisir.pack(side="right")
                 self.title_label.config(state=etat)
                 self.check_affichage.config(state=etat)
                 self.lbl_val.config(state=etat)
+
 
     def _affiche_mesure(self):
         """Active ou désactive l'affichage de la mesure"""
@@ -164,6 +174,26 @@ class UneMesure :
         # Application du facteur de conversion (mm/pixel) pour obtenir la distance réelle
         dist_reelle = dist_px * self.app.facteur_conversion.get()
         return round(dist_reelle, 2)
+
+    def _sauvegarder_mesure(self):
+        """Sauvegarde persistante de la mesure principale"""
+        import json
+        from tkinter import messagebox
+        data = {
+            "facteur_conversion": self.app.facteur_conversion.get(),
+            "distance_saisie": self.app.distance_saisie.get(),
+            "longueur": self.longueur.get(),
+            "created": self.created,
+            "pt1": self.pts["pt1"].coord_pt_img,
+            "pt2": self.pts["pt2"].coord_pt_img
+        }
+        try:
+            with open("mesure_config.json", "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+            messagebox.showinfo("Succès", "Les informations de la mesure ont bien été sauvegardées !")
+        except Exception as e:
+            print("Erreur de sauvegarde:", e)
+            messagebox.showerror("Erreur", f"Échec de la sauvegarde : {str(e)}")
 
 
 class MesureSupp:
