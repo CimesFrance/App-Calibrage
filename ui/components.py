@@ -115,33 +115,14 @@ class Interraction(tk.Frame):
         self.bg_color = kwargs.get("bg", "#2C3E50")
         super().__init__(parent, bg=self.bg_color, width=width)
         self.app = app
-        self.canvas = tk.Canvas(
-            self, bg=self.bg_color, highlightthickness=0, width=width
-        )
-        self.scrollbar = ttk.Scrollbar(
-            self, orient="vertical", command=self.canvas.yview
-        )
-        self.scrollable_frame = tk.Frame(self.canvas, bg=self.bg_color)
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
-        )
-        self.canvas.create_window(
-            (0, 0), window=self.scrollable_frame, anchor="nw", width=width
-        )
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        # Placement du canvas et de la scrollbar
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.scrollbar.pack(side="right", fill="y")
-        # Liaison de la molette de la souris
-        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        
         # Initialisation des cadres de mesures
         self._setup_measurements()
         self.interraction_gui()
 
     def _setup_measurements(self):
         self.app.MesureSupp.mesures_supp_frame = tk.Frame(
-            self.scrollable_frame, bg=self.bg_color
+            self, bg=self.bg_color
         )
         for m in self.app.MesureSupp.mes_mesures_supp.values():
             m.mesure_frame = tk.Frame(
@@ -150,21 +131,18 @@ class Interraction(tk.Frame):
 
     def interraction_gui(self):
         """Initialise l'interface graphique de la barre latérale"""
-        ImportImg(self.scrollable_frame, self.app).pack(
+        ImportImg(self, self.app).pack(
             fill="x", padx=15, pady=(10, 5)
         )
-        tk.Frame(self.scrollable_frame, height=1, bg="#34495E").pack(
+        tk.Frame(self, height=1, bg="#34495E").pack(
             fill="x", padx=15, pady=15
         )
-        EchelleFrame(self.scrollable_frame, self.app).pack(fill="x", padx=15, pady=5)
-        tk.Frame(self.scrollable_frame, height=1, bg="#34495E").pack(
+        EchelleFrame(self, self.app).pack(fill="x", padx=15, pady=5)
+        tk.Frame(self, height=1, bg="#34495E").pack(
             fill="x", padx=15, pady=15
         )
-        self.m_card = Card(self.scrollable_frame, title="Mesures de contrôle")
+        self.m_card = Card(self, title="Mesures de contrôle")
         self.m_card.pack(fill="x", padx=15, pady=5)
         self.app.MesureSupp.mesures_supp_frame.pack(fill="x", padx=15, pady=(0, 10))
         self.app.MesureSupp.mesures_supp_gui()
 
-    def _on_mousewheel(self, event):
-        """Permet de scroller avec la molette"""
-        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")

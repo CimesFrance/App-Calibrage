@@ -14,8 +14,8 @@ class ApplicationCalibrage(tk.Tk):
         self.app = AppState()
         self.title("CIMES Calibration Suite")
         self.iconbitmap("assets/image.ico")
-        self.geometry("1200x800")
-        self.minsize(1000, 600)
+        self.geometry("1300x900")
+        self.minsize(1300, 900)
         self.resizable(True, True)
         # Application du StyleManager
         self.style_manager = StyleManager(self)
