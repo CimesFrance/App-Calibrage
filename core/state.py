@@ -5,6 +5,8 @@ l'état de l'application pour une gestion plus propre et réactive."""
 
 import tkinter as tk
 from core.custom_vars import JSONVar
+import json
+import os
 
 
 class ImageModel:
@@ -72,8 +74,6 @@ class AppState:
         ]
 
     def _load_mesure_principale(self):
-        import json
-        import os
         if os.path.exists("mesure_config.json"):
             try:
                 with open("mesure_config.json", "r", encoding="utf-8") as f:

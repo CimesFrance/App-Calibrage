@@ -1,7 +1,7 @@
 {
-    "facteur_conversion": 1.0,
-    "distance_saisie": "0.00",
-    "longueur": "224.54",
+    "facteur_conversion": 1.7814235298026162,
+    "distance_saisie": "400.00",
+    "longueur": "400.0",
     "created": true,
     "pt1": {
         "x": 469.0,
