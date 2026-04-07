@@ -89,6 +89,7 @@ class FenetreImage(tk.Canvas):
         new_y = event.y - (event.y - orig["y"]) * step
         self.app.img.coord_origine.set({"x": new_x, "y": new_y})
         self._maj_fenetre()
+        return "break"
 
     def _handl_pt_start(self, event):
         if not self.app.img.ImportImg:
