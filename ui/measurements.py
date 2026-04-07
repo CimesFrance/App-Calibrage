@@ -78,6 +78,13 @@ class UneMesure :
                 style="Sidebar.TRadiobutton",
             )
             self.radio_saisir.pack(side="right")
+            if self.num != 0:
+                is_active = self.flag_affiche_frame.get()
+                etat = "normal" if is_active else "disabled"
+                # self.radio_saisir.pack(side="right")
+                self.title_label.config(state=etat)
+                self.check_affichage.config(state=etat)
+                self.lbl_val.config(state=etat)
 
     def _affiche_mesure(self):
         """Active ou désactive l'affichage de la mesure"""

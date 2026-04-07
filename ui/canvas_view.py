@@ -95,6 +95,10 @@ class FenetreImage(tk.Canvas):
             return
         idx = self.app.choix_mesure.get()
         mesure_active = self.app.list_mesures[idx]
+        if mesure_active.created == False:
+            return
+        # idx = self.app.choix_mesure.get()
+        # mesure_active = self.app.list_mesures[idx]
         self.key_pt, self.pt_appuye = bool_pt_appuye(mesure_active, event)
         if self.pt_appuye:
             self.deb_deplc_pt = [event.x, event.y]
