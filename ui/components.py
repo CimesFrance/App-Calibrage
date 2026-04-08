@@ -10,7 +10,6 @@ from utils.import_manager import importer_image_tk
 
 class Card(tk.Frame):
     """Conteneur transparent pour la sidebar"""
-
     def __init__(self, parent, title="", **kwargs):
         super().__init__(parent, bg="#2C3E50", pady=10, **kwargs)
         if title:
@@ -20,7 +19,6 @@ class Card(tk.Frame):
 
 class ImportImg(Card):
     """Carte d'importation d'image avec un bouton pour charger une image depuis le disque"""
-
     def __init__(self, parent, app, **kwargs):
         super().__init__(parent, title="Source de l'image", **kwargs)
         self.app = app
@@ -108,7 +106,6 @@ class EchelleFrame(Card):
 class Interraction(tk.Frame):
     """Conteneur principal de la barre latérale, 
     avec scrollbar intégrée pour les cartes d'interaction"""
-
     def __init__(self, parent, app, **kwargs):
         # On extrait la largeur pour la fixer
         width = kwargs.get("width", 350)

@@ -8,9 +8,7 @@ import pandas as pd
 
 
 def importer_image_tk(nom_image):
-    """
-    Charge une image depuis le dossier assets, peu importe d'où est appelé le script.
-    """
+    """Charge une image depuis le dossier assets, peu importe d'où est appelé le script."""
     # On remonte d'un niveau (depuis utils/) pour atteindre la racine, puis on va dans assets/
     dossier_utils = os.path.dirname(os.path.abspath(__file__))
     racine_projet = os.path.dirname(dossier_utils)
@@ -26,9 +24,7 @@ def importer_image_tk(nom_image):
 
 
 def info_extract_courbe_numerique(zip_file):
-    """
-    Extrait les informations de la courbe numérique du fichier zip.
-    """
+    """Extrait les informations de la courbe numérique du fichier zip."""
     with zipfile.ZipFile(zip_file, "r") as z:
         #Lire le CSV directement dans un DataFrame
         with z.open("data.csv") as f:

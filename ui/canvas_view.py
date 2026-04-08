@@ -82,28 +82,23 @@ class FenetreImage(tk.Canvas):
     def _deplacement_move(self, event):
         img_orig = self.app.img.ImportImg
         if not img_orig: return
-        
         dx, dy = event.x - self.deb_deplc_img[0], event.y - self.deb_deplc_img[1]
         orig = self.app.img.coord_origine.get()
-        
         # Calculer la taille de l'image redimensionnée et du canevas
         zoom = self.app.zoom_factor.get()
         new_w = img_orig.width * zoom
         new_h = img_orig.height * zoom
         canvas_w = self.winfo_width()
         canvas_h = self.winfo_height()
-        
         # Marge de sécurité (px) pour garantir qu'un bout de l'image reste toujours visible
         margin = 100 
         min_x = -new_w + margin
         max_x = canvas_w - margin
         min_y = -new_h + margin
         max_y = canvas_h - margin
-        
         # Clamp (Borner) les nouvelles valeurs
         new_x = max(min_x, min(max_x, orig["x"] + dx))
         new_y = max(min_y, min(max_y, orig["y"] + dy))
-        
         self.app.img.coord_origine.set({"x": new_x, "y": new_y})
         self.deb_deplc_img = [event.x, event.y]
         self._maj_fenetre()
@@ -120,7 +115,6 @@ class FenetreImage(tk.Canvas):
         elif new_zoom > 2.0:
             new_zoom = 2.0
             step = new_zoom / old_zoom
-
         self.app.zoom_factor.set(new_zoom)
         orig = self.app.img.coord_origine.get()
         new_x = event.x - (event.x - orig["x"]) * step

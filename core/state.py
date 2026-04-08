@@ -10,8 +10,7 @@ import os
 
 
 class ImageModel:
-    """Classe pour stocker les données de l'image. 
-    """
+    """Classe pour stocker les données de l'image."""
     def __init__(self):
         self.id_img = None
         self.tk_img = None
@@ -28,8 +27,7 @@ class ImageModel:
 
 
 class PointModel:
-    """Classe pour stocker les données d'un point. 
-    """
+    """Classe pour stocker les données d'un point."""
     def __init__(self, color):
         self.color = color
         self.coord_pt_img = {"x": 0, "y": 0}
@@ -47,8 +45,7 @@ class PointModel:
 
 
 class AppState:
-    """Classe pour stocker l'état de l'application. 
-    """
+    """Classe pour stocker l'état de l'application."""
     def __init__(self):
         from ui.measurements import UneMesure , MesureSupp  # Import local
         self.img = ImageModel()
@@ -74,6 +71,7 @@ class AppState:
         ]
 
     def _load_mesure_principale(self):
+        """Charge la mesure principale depuis le fichier mesure_config.json."""
         if os.path.exists("mesure_config.json"):
             try:
                 with open("mesure_config.json", "r", encoding="utf-8") as f:
@@ -82,18 +80,14 @@ class AppState:
                 self.distance_saisie.set(data.get("distance_saisie", "0.00"))
                 longueur = data.get("longueur", "0.00")
                 self.mesure_echelle.longueur.set(longueur)
-                
                 created = data.get("created", False)
                 self.mesure_echelle.created = created
-                
                 pt1_data = data.get("pt1", {"x": 0, "y": 0})
                 self.mesure_echelle.pts["pt1"].coord_pt_img = pt1_data
                 self.mesure_echelle.pts["pt1"].created = created
-                
                 pt2_data = data.get("pt2", {"x": 0, "y": 0})
                 self.mesure_echelle.pts["pt2"].coord_pt_img = pt2_data
                 self.mesure_echelle.pts["pt2"].created = created
-                
                 if created:
                     self.flag_EchelleFrame.set(True)
             except Exception as e:
