@@ -19,7 +19,7 @@ def importer_image_tk(nom_image):
         return None
 
     img = Image.open(chemin_fichier)
-    img = img.resize((24, 24), Image.LANCZOS)
+    img = img.resize((24, 24), Image.Resampling.LANCZOS)
     return ImageTk.PhotoImage(img)
 
 

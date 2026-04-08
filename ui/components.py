@@ -17,6 +17,7 @@ class Card(tk.Frame):
             lbl.pack(anchor="w", pady=(0, 10))
 
 
+# pylint: disable=too-many-ancestors
 class ImportImg(Card):
     """Carte d'importation d'image avec un bouton pour charger une image depuis le disque"""
     def __init__(self, parent, app, **kwargs):
@@ -44,10 +45,11 @@ class ImportImg(Card):
             self.app.img.reboot()
             self.app.zoom_factor.set(1.0)
             self.app.img.img_path.set(path)
-            self.app.flag_EchelleFrame.set(True)
+            self.app.flag_echelle_frame.set(True)
             self.app.flag_save_btn_affiche.set(True)
 
 
+# pylint: disable=too-many-ancestors
 class EchelleFrame(Card):
     """Carte d'étalonnage avec un bouton pour appliquer l'échelle"""
     def __init__(self, parent, app, **kwargs):
@@ -55,7 +57,7 @@ class EchelleFrame(Card):
         self.app = app
         self.app.mesure_echelle.created = True
         self._build()
-        self.app.flag_EchelleFrame.trace_add("write", self.update_view)
+        self.app.flag_echelle_frame.trace_add("write", self.update_view)
 
     def _build(self):
         # Frame pour la mesure d'échelle
@@ -78,9 +80,9 @@ class EchelleFrame(Card):
         )
         self.btn.pack(fill="x", pady=(10, 0))
 
-    def update_view(self, *args):
+    def update_view(self, *_args):
         """Met à jour l'affichage de la carte d'étalonnage"""
-        state = "normal" if self.app.flag_EchelleFrame.get() else "disabled"
+        state = "normal" if self.app.flag_echelle_frame.get() else "disabled"
         self.btn.config(state=state)
         self.ent.config(state=state)
 
@@ -112,18 +114,17 @@ class Interraction(tk.Frame):
         self.bg_color = kwargs.get("bg", "#2C3E50")
         super().__init__(parent, bg=self.bg_color, width=width)
         self.app = app
-        
         # Initialisation des cadres de mesures
         self._setup_measurements()
         self.interraction_gui()
 
     def _setup_measurements(self):
-        self.app.MesureSupp.mesures_supp_frame = tk.Frame(
+        self.app.mesure_supp.mesures_supp_frame = tk.Frame(
             self, bg=self.bg_color
         )
-        for m in self.app.MesureSupp.mes_mesures_supp.values():
+        for m in self.app.mesure_supp.mes_mesures_supp.values():
             m.mesure_frame = tk.Frame(
-                self.app.MesureSupp.mesures_supp_frame, bg=self.bg_color
+                self.app.mesure_supp.mesures_supp_frame, bg=self.bg_color
             )
 
     def interraction_gui(self):
@@ -140,6 +141,5 @@ class Interraction(tk.Frame):
         )
         self.m_card = Card(self, title="Mesures de contrôle")
         self.m_card.pack(fill="x", padx=15, pady=5)
-        self.app.MesureSupp.mesures_supp_frame.pack(fill="x", padx=15, pady=(0, 10))
-        self.app.MesureSupp.mesures_supp_gui()
-
+        self.app.mesure_supp.mesures_supp_frame.pack(fill="x", padx=15, pady=(0, 10))
+        self.app.mesure_supp.mesures_supp_gui()

@@ -3,19 +3,19 @@ Module de gestion de l'état de l'application.
 Contient les classes ImageModel, PointModel, et AppState qui centralisent les données et
 l'état de l'application pour une gestion plus propre et réactive."""
 
-import tkinter as tk
-from core.custom_vars import JSONVar
 import json
 import os
+import tkinter as tk
+from core.custom_vars import JSONVar
 
-
+# pylint: disable=too-few-public-methods
 class ImageModel:
     """Classe pour stocker les données de l'image."""
     def __init__(self):
         self.id_img = None
         self.tk_img = None
         self.coord_origine = JSONVar(value={"x": 0, "y": 0})
-        self.ImportImg = None
+        self.import_img = None
         self.img_path = tk.StringVar(value="")
 
     def reboot(self):
@@ -23,9 +23,10 @@ class ImageModel:
         self.id_img = None
         self.tk_img = None
         self.coord_origine.set({"x": 0, "y": 0})
-        self.ImportImg = None
+        self.import_img = None
 
 
+# pylint: disable=too-few-public-methods
 class PointModel:
     """Classe pour stocker les données d'un point."""
     def __init__(self, color):
@@ -44,10 +45,13 @@ class PointModel:
         self.created = False
 
 
+# pylint: disable=too-many-instance-attributes
 class AppState:
     """Classe pour stocker l'état de l'application."""
     def __init__(self):
-        from ui.measurements import UneMesure , MesureSupp  # Import local
+        # pylint: disable=import-outside-toplevel
+        from ui.une_mesure import UneMesure  # Import local
+        from ui.mesure_supp import MesureSupp
         self.img = ImageModel()
         self.zoom_factor = tk.DoubleVar(value=1.0)
         self.facteur_conversion = tk.DoubleVar(value=1.0)
@@ -55,19 +59,19 @@ class AppState:
         self.choix_mesure = tk.IntVar(value=0)
         self.flag_mesures_supp_affiche = tk.BooleanVar(value=True)
         self.flage_changer_echelle_affiche = tk.BooleanVar(value=False)
-        self.flag_EchelleFrame = tk.BooleanVar(value=False)
+        self.flag_echelle_frame = tk.BooleanVar(value=False)
         self.flag_save_btn_affiche = tk.BooleanVar(value=False)
         self.modif_canvas = tk.BooleanVar(value=True)
         self.mesure_echelle = UneMesure (
             title="Mesure Echelle", color="red", num=0, app=self
         )
         self._load_mesure_principale()
-        self.MesureSupp = MesureSupp(app=self)
+        self.mesure_supp = MesureSupp(app=self)
         self.list_mesures = [
             self.mesure_echelle,
-            self.MesureSupp.mes_mesures_supp["Mesure_supp_1"],
-            self.MesureSupp.mes_mesures_supp["Mesure_supp_2"],
-            self.MesureSupp.mes_mesures_supp["Mesure_supp_3"],
+            self.mesure_supp.mes_mesures_supp["Mesure_supp_1"],
+            self.mesure_supp.mes_mesures_supp["Mesure_supp_2"],
+            self.mesure_supp.mes_mesures_supp["Mesure_supp_3"],
         ]
 
     def _load_mesure_principale(self):
@@ -89,6 +93,7 @@ class AppState:
                 self.mesure_echelle.pts["pt2"].coord_pt_img = pt2_data
                 self.mesure_echelle.pts["pt2"].created = created
                 if created:
-                    self.flag_EchelleFrame.set(True)
+                    self.flag_echelle_frame.set(True)
+            # pylint: disable=broad-exception-caught
             except Exception as e:
                 print("Erreur de chargement de la configuration:", e)

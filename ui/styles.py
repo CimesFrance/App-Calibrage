@@ -2,6 +2,7 @@
 
 from tkinter import ttk
 
+# pylint: disable=too-few-public-methods
 class StyleManager:
     """Classe pour gérer les styles de l'application."""
     BG_MAIN = "#F5F6FA"

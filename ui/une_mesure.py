@@ -1,15 +1,13 @@
-"""
-Module de gestion des differentes mesures supplémentaires (distance entre 2 points)
-Chaque mesure est représentée par une instance de la classe "UneMesure ", qui gère :
-- Les points de mesure (pt1 et pt2) avec leurs coordonnées en image et en canvas
-"""
+"""Module de gestion d'une mesure individuelle (distance entre 2 points)
+Chaque mesure est représentée par une instance de la classe "UneMesure"""
 
+import json
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import numpy as np
 from core.state import PointModel
 
-
+# pylint: disable=too-many-instance-attributes
 class UneMesure :
     """Classe représentant une mesure de distance entre 2 points sur l'image.
     Chaque mesure a : - un titre (ex: "Mesure N°1")
@@ -19,13 +17,18 @@ class UneMesure :
     - une valeur de longueur calculée
     - des contrôles d'affichage (checkbox pour afficher les points,
     radio pour sélectionner la mesure active)"""
-
     def __init__(self, title, color, num, app):
         self.title = title
         self.title_label = None
         self.check_affichage = None
         self.label_afficheur_longueure = None
         self.afficheur_longueure = None
+        self.pastille = None
+        self.dash = None
+        self.lbl_val = None
+        self.lbl_unit = None
+        self.radio_saisir = None
+        self.btn_save = None
         self.color = color
         self.flag_affiche_ptligne = tk.BooleanVar(value=True)
         self.flag_affiche_frame = tk.BooleanVar(value=False)
@@ -78,7 +81,6 @@ class UneMesure :
                 style="Sidebar.TRadiobutton",
             )
             self.radio_saisir.pack(side="right")
-            
             if self.num == 0:
                 self.btn_save = ttk.Button(
                     btm,
@@ -87,7 +89,6 @@ class UneMesure :
                     style="TButton"
                 )
                 self.btn_save.pack(side="right", padx=10)
-
             if self.num != 0:
                 is_active = self.flag_affiche_frame.get()
                 etat = "normal" if is_active else "disabled"
@@ -101,7 +102,7 @@ class UneMesure :
         current = self.app.modif_canvas.get()
         self.app.modif_canvas.set(not current)
 
-    def display_state(self, *args):
+    def display_state(self, *_args):
         """Met à jour l'affichage de la mesure"""
         is_active = self.flag_affiche_frame.get()
         etat = "normal" if is_active else "disabled"
@@ -112,7 +113,6 @@ class UneMesure :
                 state="normal"
             )  # Toujours actif pour cibler l'ajout
             self.lbl_val.config(state=etat)
-
             # Styles dynamiques
             dash_bg = "#34495E" if is_active else "#2C3E50"
             val_style = "Value.TLabel" if is_active else "DisabledValue.TLabel"
@@ -177,8 +177,6 @@ class UneMesure :
 
     def _sauvegarder_mesure(self):
         """Sauvegarde persistante de la mesure principale"""
-        import json
-        from tkinter import messagebox
         data = {
             "facteur_conversion": self.app.facteur_conversion.get(),
             "distance_saisie": self.app.distance_saisie.get(),
@@ -190,74 +188,9 @@ class UneMesure :
         try:
             with open("mesure_config.json", "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4)
-            messagebox.showinfo("Succès", "Les informations de la mesure ont bien été sauvegardées !")
+            messagebox.showinfo("Succès",
+            "Les informations de la mesure ont bien été sauvegardées !")
+        # pylint: disable=broad-exception-caught
         except Exception as e:
             print("Erreur de sauvegarde:", e)
             messagebox.showerror("Erreur", f"Échec de la sauvegarde : {str(e)}")
-
-
-class MesureSupp:
-    """Classe pour gérer les mesures supplémentaires"""
-    def __init__(self, app):
-        self.app = app
-        self.mesures_supp_frame = None
-        self.mes_mesures_supp = {
-            "Mesure_supp_1": UneMesure ("Mesure N°1", "green", 1, self.app),
-            "Mesure_supp_2": UneMesure ("Mesure N°2", "blue", 2, self.app),
-            "Mesure_supp_3": UneMesure ("Mesure N°3", "yellow", 3, self.app),
-        }
-        self.app.flag_mesures_supp_affiche.trace_add("write", self.display_state)
-
-    def mesures_supp_gui(self):
-        """Construit l'interface graphique des mesures supplémentaires"""
-        if self.mesures_supp_frame is not None:
-            self.btn_ajouter = ttk.Button(
-                self.mesures_supp_frame,
-                text="Ajouter",
-                command=self._ajouter_mesure,
-                style="TButton",
-            )
-            self.btn_supprimer = ttk.Button(
-                self.mesures_supp_frame,
-                text="Supprimer",
-                command=self._supprimer_mesure,
-                style="Secondary.TButton",
-            )
-            self.btn_ajouter.grid(row=0, column=0, sticky="we", padx=2, pady=(0, 10))
-            self.btn_supprimer.grid(row=0, column=1, sticky="we", padx=2, pady=(0, 10))
-            for i, (cle, mesure) in enumerate(self.mes_mesures_supp.items(), start=1):
-                mesure.mesure_gui()
-                mesure.mesure_frame.grid(
-                    row=i, column=0, columnspan=2, sticky="nsew", padx=2, pady=2
-                )
-            self.mesures_supp_frame.columnconfigure(0, weight=1)
-            self.mesures_supp_frame.columnconfigure(1, weight=1)
-
-    def display_state(self, *args):
-        """Met à jour l'affichage des mesures supplémentaires"""
-        etat = "normal" if self.app.flag_mesures_supp_affiche.get() else "disabled"
-        self.btn_ajouter.config(state=etat)
-        self.btn_supprimer.config(state=etat)
-
-    def _ajouter_mesure(self):
-        """Ajoute une mesure supplémentaire"""
-        num = self.app.choix_mesure.get()
-        key = f"Mesure_supp_{num}"
-        if num > 0 and key in self.mes_mesures_supp:
-            self.mes_mesures_supp[key].longueur.set("0.00")
-            self.mes_mesures_supp[key].flag_affiche_frame.set(True)
-            self.mes_mesures_supp[key].created = True
-
-    def _supprimer_mesure(self):
-        """Supprime une mesure supplémentaire"""
-        num = self.app.choix_mesure.get()
-        key = f"Mesure_supp_{num}"
-        if num > 0 and key in self.mes_mesures_supp:
-            m = self.mes_mesures_supp[key]
-            # Désactivation
-            m.longueur.set("- - -")
-            m.flag_affiche_frame.set(False)
-            m.created = False
-            m.supprimer_pts()  # Nettoie les coordonnées
-            current = self.app.modif_canvas.get()
-            self.app.modif_canvas.set(not current)
